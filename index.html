@@ -38,7 +38,7 @@
     <p>
       This document defines a new API {{MediaDevices/getAllScreenMedia}}
       for capturing multiple
-      <a data-cite="screen-capture#dfn-display-surface">display surfaces</a>
+      <a data-cite="screen-capture#dfn-display-surface">monitors</a>
       following one user gesture.
       It is an extension to the Screen Capture API [[screen-capture]].
     </p>
@@ -60,19 +60,15 @@
     </p>
     <p>
 
-      Users currently cannot capture multiple
-      <a data-cite="screen-capture#dfn-monitor">monitors</a>
-      at once without a [=transient activation=]. This may be useful in certain
-      scenarios, e.g. for compliance or training purposes.
-      The only currently available alternative is through the Screen Capture API with
+      Users currently cannot capture all
+      <a data-cite="screen-capture#dfn-monitor">monitors</a> attached to a device
+      at once without having to execute a two step sequence multiple times,
+      i.e. an interaction with the page through a [=transient activation=] that calls
       <a data-cite="screen-capture#dom-mediadevices-getdisplaymedia">getDisplayMedia</a>
-      by calling
-      <a data-cite="screen-capture#dom-mediadevices-getdisplaymedia">getDisplayMedia</a>
-      several times and asking the user to select the available
-      <a data-cite="screen-capture#dfn-monitor">monitors</a>.
-      This requires multiple user gestures, repeated interaction with browser-level UX.
-      This adds unnecessary friction and results in degraded user experience and
-      interrupted workflows.
+      and a subsequent interaction with the media picker.
+      This is a cumbersome process and in some cases even local regulations may
+      even require a guarantee that all <a data-cite="screen-capture#dfn-monitor">monitors</a>
+      are captured.
     </p>
     <p>
       This document describes {{MediaDevices/getAllScreenMedia}}, an extension to
@@ -159,14 +155,6 @@
           <dfn>getAllScreenMedia</dfn>
         </dt>
         <dd>
-          <p>
-            The <a href="#dfn-user-agent">user agent</a> MUST return a list of {{MediaStream}}
-            objects, where each stream belongs to exactly one of the
-            <a data-cite="screen-capture#dfn-monitor">monitors</a> attached to the device.
-          </p>
-          <p>
-            {{PermissionState/"granted"}} permissions cannot be persisted.
-          </p>
           <p>When the {{MediaDevices/getAllScreenMedia()}}
             method is called, the <a href="#dfn-user-agent">user agent</a> MUST run the following
             steps:</p>
@@ -175,31 +163,34 @@
               <p>Let <var>p</var> be a new promise.</p>
             </li>
             <li>
+              <p>The <a href="#dfn-user-agent">user agent</a> MUST obtain permission
+                by checking an allow-list of <a data-cite="url#concept-url-origin">origins</a> specified
+                by an administrator or device owner. If the <a data-cite="url#concept-url-origin">origin</a>
+                is not in the allow-list defined by the administrator, [=reject=]
+                <var>p</var> with a new {{DOMException}} object whose {{DOMException/name}} attribute has the
+                value {{NotAllowedError}}.
+              </p>
+            </li>
+            <li>
               <p>Run the following steps in parallel:</p>
               <ol>
                 <li>
-                  <p>Optionally, e.g., for security reasons, or due to platform
-                    limitations, jump to the step labeled <em>Permission Failure</em> below.</p>
+                  <p>Optionally, due to platform limitations, [=reject=]
+                    <var>p</var> with a new {{DOMException}} object whose {{DOMException/name}} attribute has the
+                    value {{NotAllowedError}}.
+                  </p>
                 </li>
                 <li>
-                  <p>The <a href="#dfn-user-agent">user agent</a> MUST obtain permission
-                  by appropriate means, e.g. by asking the user for permission or by
-                  explicit allowlisting <a data-cite="url#concept-url-origin">origins</a> by an administrator.
+                  <p>
+                    Enumerate all <a data-cite="screen-capture#dfn-monitor">monitors</a>,
+                    resulting in a set of media to capture.
                   </p>
                   <p>
-                    Enumerate all <a data-cite="screen-capture#dfn-monitor">monitors</a>.
-                    For each <a data-cite="screen-capture#dfn-monitor">monitor</a> create
-                    a {{PermissionDescriptor}} with its {{PermissionDescriptor/name}} set
-                    to "display-capture", resulting in a set of provided media.
+                    Each provided media MUST include precisely one video track.
+                    Once selected, the source of each {{MediaDevices/ScreenCaptureMediaStreamTrack}} MUST NOT change.
                   </p>
-                  <p>Each provided media MUST include precisely one video track.</p>
                   <p>Each provided media MUST not include any audio track.</p>
-                  <p>The devices chosen MUST be the ones enumerated previously.
-                    Once selected, the source of each {{MediaDevices/ScreenCaptureMediaStreamTrack}} MUST NOT change,
-                    unless the user permits it through their interaction with
-                    the <a href="#dfn-user-agent">user agent</a>.</p>
-                  <p>If the result of the request is {{PermissionState/"granted"}}, then for
-                    each device that is sourcing the provided medias, using
+                  <p>For each device that is sourcing the selected medias, using
                     a stable and private id for the device, <var>deviceId</var>,
                     set [[\devicesLiveMap]]<var>[deviceId]</var> to
                     <code>true</code>, if it isn’t already <code>true</code>,
@@ -208,20 +199,14 @@
                     <code>true</code>, if it isn’t already
                     <code>true</code>.
                   </p>
-                  <p>
-                    The <a href="#dfn-user-agent">user agent</a> MUST NOT store a {{PermissionState/"granted"}} permission entry.
-                  </p>
-                  <p>If the result is {{PermissionState/"denied"}}, jump to the step labeled
-                    <em>Permission Failure</em> below.
-                  </p>
-                  <p>If the result of the request is {{PermissionState/"granted"}} but a hardware error
+                  <p>If a hardware error
                     such as an OS/program/webpage lock prevents access to at least one device,
                     <a>reject</a> <var>p</var> with a new
                     {{DOMException}} object whose
                     {{DOMException/name}} attribute has the value
                     {{NotReadableError}} and abort these steps.
                   </p>
-                  <p>If the result of the request is {{PermissionState/"granted"}} but device access fails for
+                  <p>If device access fails for
                     any reason other than those listed above, <a>reject</a>
                     <var>p</var> with a new {{DOMException}}
                     object whose {{DOMException/name}} attribute has the
@@ -236,13 +221,6 @@
                   <p><a>Resolve</a> <var>p</var> with <var>streams</var> and
                     abort these steps.</p>
                 </li>
-                <li>
-                  <p><em>Permission Failure</em>: [=Reject=]
-                    <var>p</var> with a new {{DOMException}}
-                    object whose {{DOMException/name}} attribute has the
-                    value {{NotAllowedError}}.
-                  </p>
-                </li>
               </ol>
             </li>
             <li>
@@ -250,21 +228,15 @@
             </li>
           </ol>
           <p>
-            The <a href="#dfn-user-agent">user agent</a> MUST NOT capture content that's behind a
-            partially transparent captured <a data-cite="screen-capture#dfn-display-surface">display surfaces</a>.
-          </p>
-          <p>
-            For the newly created {{MediaDevices/ScreenCaptureMediaStreamTrack}}s, the <a>user agent</a> MUST NOT capture the
-            prompt that was shown to the user.
+            The <a href="#dfn-user-agent">user agent</a> MUST return a list of {{MediaStream}}
+            objects, where each stream belongs to exactly one of the
+            <a data-cite="screen-capture#dfn-monitor">monitors</a> attached to the device.
           </p>
           <p>
             Information that is not currently rendered to the screen SHOULD be obscured in captures
             unless the application has been specifically authorized to access that content (e.g.
             through means such as
             <a data-cite="screen-capture#elevated-permissions">elevated permissions</a>).
-          </p>
-          <p>
-            The <a href="#dfn-user-agent">user agent</a> MUST NOT share audio.
           </p>
         </dd>
       </dl>
@@ -293,32 +265,25 @@
       of {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.
     </section>
   </section>
-  <section id="permissionsintegration">
-    <h2>
-      Permissions Integration
-    </h2>
-    <p>
-        As required for integration with the [[[Permissions]]] specification, this specification defines the following:
-      </p>
-      <dl>
-        <dt>
-          [=powerful feature/permission state constraints=]
-        </dt>
-        <dd>
-          Valid values for this descriptor's <a>permission state</a> are
-          {{PermissionState/"granted"}} and {{PermissionState/"denied"}}.
-          The <a href="#dfn-user-agent">user agent</a> MAY
-          set this descriptor's <a>permission state</a> to {{PermissionState/"granted"}}.
-        </dd>
-      </dl>
-  </section>
   <section id="privacyindicatorsrequirements">
     <h2>
       Privacy Indicator Requirements
     </h2>
-    <p>This specification extends the <a data-cite="screen-capture#privacy-indicator-requirements">
-        Privacy Indicator Requirements</a> of
-      {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.</p>
+    <p>
+      References in this specification to [[\devicesLiveMap]], and
+      [[\devicesAccessibleMap]] refer to the
+      definitions already created to support Privacy Indicator Requirements for
+      {{MediaDevices/getDisplayMedia()}}.
+    </p>
+    <p>
+      This specification extends the <a data-cite="screen-capture#privacy-indicator-requirements">
+      Privacy Indicator Requirements</a> of
+      {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.
+      In addition to these requirements, <a href="#dfn-user-agent">user agents</a> MUST
+      ensure that privacy indicators are visible at all times and that dismissal of the indicators
+      must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
+      of the application capturing the screens.
+    </p>
   </section>
 </body>
 
