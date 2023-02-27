@@ -112,7 +112,7 @@
       try {
         const mediaStreams = await navigator.mediaDevices.getAllScreenMedia();
         mediaStreams.forEach((mediaStream, index) => {
-          videoElements[index].srcObject = mediaStream;
+          files.push(saveToFile(mediaStream));
         })
       } catch (e) {
         console.log('Unable to acquire screen captures: ' + e);
@@ -255,11 +255,20 @@
           ScreenDetailed screenDetailed();
         };
       </pre>
+
+      <dl data-link-for="ScreenCaptureMediaStreamTrack" data-dfn-for="ScreenCaptureMediaStreamTrack" class="methods">
+        <dt>
+          <dfn>screenDetailed</dfn>
+        </dt>
+        The {{screenDetailed()}} method returns a {{ScreenDetailed}} object [[!window-placement]]
+        that corresponds to the <a data-cite="screen-capture#dfn-monitor">monitor</a> that
+        is captured by the {{ScreenCaptureMediaStreamTrack}} object.
+      </dl>
     </section>
 
     <section>
       <h2>Misc</h2>
-      This specification extends the setions
+      This specification extends the sections
       <a data-cite="screen-capture#hidden-display-surfaces">Closed and Minimized Display Surfaces</a>, and
       <a data-cite="screen-capture#deviceId">Device Identifiers</a>
       of {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.
@@ -282,7 +291,14 @@
       In addition to these requirements, <a href="#dfn-user-agent">user agents</a> MUST
       ensure that privacy indicators are visible at all times and that dismissal of the indicators
       must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
-      of the application capturing the screens.
+      of the application capturing the screens. The indicators MUST clearly inform the user that the
+      <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured (and potentially recorded).
+      The indicators MUST remain active for at five seconds, even if the capturing is ended earlier.
+    </p>
+    <p>
+      The <a href="#dfn-user-agent">user agents</a> MUST provide the user with the means to look up
+      whether {{MediaDevices/getAllScreenMedia()}} is enabled and to learn about the implications
+      of this API.
     </p>
   </section>
 </body>
