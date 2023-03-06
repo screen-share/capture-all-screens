@@ -66,9 +66,9 @@
       i.e. an interaction with the page through a [=transient activation=] that calls
       <a data-cite="screen-capture#dom-mediadevices-getdisplaymedia">getDisplayMedia</a>
       and a subsequent interaction with the media picker.
-      This is a cumbersome process and in some cases even local regulations may
-      even require a guarantee that all <a data-cite="screen-capture#dfn-monitor">monitors</a>
-      are captured.
+      This is a cumbersome process and does not guarantee that all
+      <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured
+      (which may be required by regulations).
     </p>
     <p>
       This document describes {{MediaDevices/getAllScreenMedia}}, an extension to
@@ -164,9 +164,9 @@
             </li>
             <li>
               <p>The <a href="#dfn-user-agent">user agent</a> MUST obtain permission
-                by checking an allow-list of <a data-cite="url#concept-url-origin">origins</a> specified
+                by checking an allowlist of <a data-cite="url#concept-url-origin">origins</a> specified
                 by an administrator or device owner. If the <a data-cite="url#concept-url-origin">origin</a>
-                is not in the allow-list defined by the administrator, [=reject=]
+                is not in the allowlist defined by the administrator, [=reject=]
                 <var>p</var> with a new {{DOMException}} object whose {{DOMException/name}} attribute has the
                 value {{NotAllowedError}}.
               </p>
@@ -227,17 +227,6 @@
               <p>Return <var>p</var>.</p>
             </li>
           </ol>
-          <p>
-            The <a href="#dfn-user-agent">user agent</a> MUST return a list of {{MediaStream}}
-            objects, where each stream belongs to exactly one of the
-            <a data-cite="screen-capture#dfn-monitor">monitors</a> attached to the device.
-          </p>
-          <p>
-            Information that is not currently rendered to the screen SHOULD be obscured in captures
-            unless the application has been specifically authorized to access that content (e.g.
-            through means such as
-            <a data-cite="screen-capture#elevated-permissions">elevated permissions</a>).
-          </p>
         </dd>
       </dl>
     </section>
@@ -260,18 +249,10 @@
         <dt>
           <dfn>screenDetailed</dfn>
         </dt>
-        The {{screenDetailed()}} method returns a {{ScreenDetailed}} object [[!window-placement]]
+        The {{screenDetailed()}} MUST return a {{ScreenDetailed}} object [[!window-placement]]
         that corresponds to the <a data-cite="screen-capture#dfn-monitor">monitor</a> that
         is captured by the {{ScreenCaptureMediaStreamTrack}} object.
       </dl>
-    </section>
-
-    <section>
-      <h2>Misc</h2>
-      This specification extends the sections
-      <a data-cite="screen-capture#hidden-display-surfaces">Closed and Minimized Display Surfaces</a>, and
-      <a data-cite="screen-capture#deviceId">Device Identifiers</a>
-      of {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.
     </section>
   </section>
   <section id="privacyindicatorsrequirements">
@@ -292,13 +273,16 @@
       ensure that privacy indicators are visible at all times and that dismissal of the indicators
       must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
       of the application capturing the screens. The indicators MUST clearly inform the user that the
-      <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured (and potentially recorded).
+      <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured.
+      Only the user may dismiss the privacy indicator.
       The indicators MUST remain active for at five seconds, even if the capturing is ended earlier.
     </p>
     <p>
-      The <a href="#dfn-user-agent">user agents</a> MUST provide the user with the means to look up
-      whether {{MediaDevices/getAllScreenMedia()}} is enabled and to learn about the implications
-      of this API.
+      The <a href="#dfn-user-agent">user agents</a> MUST provide the user with
+      the means to look up whether any <a data-cite="url#concept-url-origin">origin</a>
+      is allowed to call {{MediaDevices/getAllScreenMedia()}}.
+      The <a href="#dfn-user-agent">user agents</a> MUST further provide the user
+      with information on the implications thereof.
     </p>
   </section>
 </body>
