@@ -36,7 +36,7 @@
   <section id="abstract">
     <h2>Abstract</h2>
     <p>
-      This document defines a new API {{MediaDevices/getAllScreenMedia}}
+      This document defines a new API {{MediaDevices/getAllScreensMedia}}
       for capturing multiple
       <a data-cite="screen-capture#dfn-display-surface">monitors</a>
       following one user gesture.
@@ -71,9 +71,9 @@
       (which may be required by regulations).
     </p>
     <p>
-      This document describes {{MediaDevices/getAllScreenMedia}}, an extension to
+      This document describes {{MediaDevices/getAllScreensMedia}}, an extension to
       the Screen Capture API [[screen-capture]].
-      {{MediaDevices/getAllScreenMedia}} enables
+      {{MediaDevices/getAllScreensMedia}} enables
       the capturing of several of the user's <a data-cite="screen-capture#dfn-monitor">monitors</a>,
       or parts thereof, without a [=transient activation=].
       It returns a list of media streams
@@ -105,12 +105,12 @@
       The following example demonstrates a request for all
       <a data-cite="screen-capture#dfn-monitor">monitors</a>
       using the
-      <code>navigator.mediaDevices.getAllScreenMedia</code>
+      <code>navigator.mediaDevices.getAllScreensMedia</code>
       method defined in this document.
     </p>
     <pre class="example highlight">
       try {
-        const mediaStreams = await navigator.mediaDevices.getAllScreenMedia();
+        const mediaStreams = await navigator.mediaDevices.getAllScreensMedia();
         mediaStreams.forEach((mediaStream, index) => {
           files.push(saveToFile(mediaStream));
         })
@@ -138,7 +138,7 @@
     <p>
       Capture of all <a data-cite="screen-capture#dfn-monitor">monitors</a>
       is enabled through the addition of a new
-      {{MediaDevices/getAllScreenMedia}} method on the {{MediaDevices}}
+      {{MediaDevices/getAllScreensMedia}} method on the {{MediaDevices}}
       interface.
     </p>
     <section>
@@ -147,15 +147,15 @@
       </h2>
       <pre class="idl">
           partial interface MediaDevices {
-            Promise&lt;sequence&lt;MediaStream&gt;&gt; getAllScreenMedia();
+            Promise&lt;sequence&lt;MediaStream&gt;&gt; getAllScreensMedia();
           };
         </pre>
       <dl data-link-for="MediaDevices" data-dfn-for="MediaDevices" class="methods">
         <dt>
-          <dfn>getAllScreenMedia</dfn>
+          <dfn>getAllScreensMedia</dfn>
         </dt>
         <dd>
-          <p>When the {{MediaDevices/getAllScreenMedia()}}
+          <p>When the {{MediaDevices/getAllScreensMedia()}}
             method is called, the <a href="#dfn-user-agent">user agent</a> MUST run the following
             steps:</p>
           <ol>
@@ -268,7 +268,7 @@
     <p>
       This specification extends the <a data-cite="screen-capture#privacy-indicator-requirements">
       Privacy Indicator Requirements</a> of
-      {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreenMedia()}}.
+      {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreensMedia()}}.
       In addition to these requirements, <a href="#dfn-user-agent">user agents</a> MUST
       ensure that privacy indicators are visible at all times and that dismissal of the indicators
       must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
@@ -280,7 +280,7 @@
     <p>
       The <a href="#dfn-user-agent">user agents</a> MUST provide the user with
       the means to look up whether any <a data-cite="url#concept-url-origin">origin</a>
-      is allowed to call {{MediaDevices/getAllScreenMedia()}}.
+      is allowed to call {{MediaDevices/getAllScreensMedia()}}.
       The <a href="#dfn-user-agent">user agents</a> MUST further provide the user
       with information on the implications thereof.
     </p>
