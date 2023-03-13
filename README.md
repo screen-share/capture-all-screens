@@ -1,3 +1,5 @@
+# getAllScreensMedia()
+
 ### Introduction
 
 Some companies run a managed device fleet. Some of them need a way to obtain video tracks of all screens, for such use cases as:
