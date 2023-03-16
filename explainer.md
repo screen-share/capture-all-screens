@@ -8,18 +8,17 @@ that the user must be informed about capturing at all times. The usage
 indicator cannot be prevented by the web app.
 
 ## Motivation
-Partners have asked for such an API in order to meet legal and internal
-compliance requirements. Interest for such an API was
-[publicly expressed](https://github.com/w3c/mediacapture-screen-share/issues/204).
+Web developers have [expressed interest](https://github.com/w3c/mediacapture-screen-share/issues/204) for such an API in order to meet legal and internal
+compliance requirements.
 
 ## Use cases
+* Contact centers may require full documentation of provided information for
+compliance and / or training purposes.
 * In the financial industry a consultant may provide financial advice digitally
 and a complete documentation of the information may be required by law in some
 jurisdictions.
 * Internet usage in prisons may require full traceability to allow convicts to
 access the internet.
-* Contact centers may require full documentation of provided information for
-compliance and / or training purposes.
 
 ## API
 
@@ -36,18 +35,18 @@ with `applyConstraints`.
 policy.
 * Usage indicators must be shown to the user at all times.
 
-`getAllScreensMedia` will use `ScreenCaptureMediaStreamTrack`in the
-returned `MediaStream` which provides access to monitor details analogous
-to the
+`getAllScreensMedia` will use `ScreenCaptureMediaStreamTrack` (which is a
+subclass of `MediaStreamTrack`) in the returned `MediaStream` which provides
+access to monitor details analogous to the
 [getScreenDetails API](https://developer.chrome.com/articles/multi-screen-window-placement/#the-getscreendetails()-method).
 
-```cs
+```idl
 partial interface MediaDevices {
  Promise<sequence<MediaStream>> getAllScreensMedia();
 }
 ```
 
-```cs
+```idl
 interface ScreenCaptureMediaStreamTrack : MediaStreamTrack {
   ScreenDetailed screenDetailed();
 }
