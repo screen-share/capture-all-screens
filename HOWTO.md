@@ -19,7 +19,8 @@ We will do our best to keep these instructions up to date as protocol and API ch
 5. Navigate to the [Chrome Admin panel](https://admin.google.com) and login with your admin account.
 6. Navigate to `Devices` > `Chrome` > `Settings` > `Users & browsers` and add the origin of the web page using `getAllScreensMedia` to the *Auto-select for multi screen captures* allow-list.
 7. Wait for the policy value to propagate to your device. ([Link to the policy page](chrome://policy))
-8. Navigate to the allow-listed page and use `getAllScreensMedia`.
+8. Restart your system. *Note: this is by design and changes only come into effect after a restart to improve privacy.*
+9. Navigate to the allow-listed page and use `getAllScreensMedia`.
 
 ## Example
 ```javascript
@@ -46,5 +47,6 @@ async function captureAndShowAllScreens() {
     });
   } catch (e) {
     console.log('Unable to acquire screen captures: ' + e);
+  }
 }
 ```
