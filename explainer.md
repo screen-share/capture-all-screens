@@ -40,13 +40,13 @@ subclass of `MediaStreamTrack`) in the returned `MediaStream` which provides
 access to monitor details analogous to the
 [getScreenDetails API](https://developer.chrome.com/articles/multi-screen-window-placement/#the-getscreendetails()-method).
 
-```idl
+```WebIdl
 partial interface MediaDevices {
  Promise<sequence<MediaStream>> getAllScreensMedia();
 }
 ```
 
-```idl
+```WebIdl
 interface ScreenCaptureMediaStreamTrack : MediaStreamTrack {
   ScreenDetailed screenDetailed();
 }

@@ -12,7 +12,7 @@ The state of the art is that they need to call getDisplayMedia() multiple times,
 
 Add a new method getAllScreensMedia that returns a promise to a sequence of media streams.
 
-```webidl
+```WebIdl
 partial interface MediaDevices {
   Promise<sequence<MediaStream>> getAllScreensMedia();
 }
