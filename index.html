@@ -126,7 +126,7 @@
     <p>
       This document uses the definition of {{MediaStream}}, {{MediaStreamTrack}}
       from [[!GETUSERMEDIA]], <a data-cite="url#concept-url-origin">origin</a> from [[!url]],
-      {{ScreenDetailed}} from [[!window-placement]],
+      {{ScreenDetailed}} from [[!window-management]],
       and <a data-cite="screen-capture#dfn-display-surface">monitor</a>
       from [[!screen-capture]].
     </p>
@@ -235,7 +235,7 @@
       <h2>ScreenCaptureMediaStreamTrack</h2>
       {{MediaDevices/ScreenCaptureMediaStreamTrack}} extends {{MediaStreamTrack}} and
       corresponds to a <a data-cite="screen-capture#dfn-monitor">monitor</a>.
-      It additionally provides a connection to the window placement API [[!window-placement]]
+      It additionally provides a connection to the window placement API [[!window-management]]
       with the {{MediaDevices/ScreenCaptureMediaStreamTrack/screenDetailed}} function with which metadata about the
       captured <a data-cite="screen-capture#dfn-monitor">monitor</a> can be retrieved.
       <pre class="idl">
@@ -249,7 +249,7 @@
         <dt>
           <dfn>screenDetailed</dfn>
         </dt>
-        The {{screenDetailed()}} MUST return a {{ScreenDetailed}} object [[!window-placement]]
+        The {{screenDetailed()}} MUST return a {{ScreenDetailed}} object [[!window-management]]
         that corresponds to the <a data-cite="screen-capture#dfn-monitor">monitor</a> that
         is captured by the {{ScreenCaptureMediaStreamTrack}} object.
       </dl>
