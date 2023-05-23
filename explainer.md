@@ -63,3 +63,15 @@ try {
   console.log('Unable to acquire screen captures: ' + e);
 }
 ```
+
+## Alternatives considered
+An alternative to the proposed API is to [introduce an API](https://github.com/w3c/mediacapture-screen-share/issues/204)
+`getDisplayMediaSet` analogous to the `getDisplayMedia` API.
+In an unmanaged setting, `getDisplayMediaSet` would allow the user to manually pick
+multiple surfaces.
+In a managed setting, developers could pass an `auto_accept` attribute that
+automatically captures all attached monitors.
+This approach was not followed as there is not enough interest in the use case
+of capturing multiple surfaces manually. But there is significant interest in the
+use case of capturing all monitors with the additional guarantee these are indeed
+all attached monitors (e.g. for legal compliance or training).
