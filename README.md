@@ -1,19 +1,65 @@
-# getAllScreensMedia()
+# Capture all screens explainer
 
-### Introduction
+## Introduction
+`getAllScreensMedia` is an API that allows clients to capture all monitors
+attached to a device at once without user interaction. It is only available in
+managed sessions for allow-listed web apps and it is a requirement
+that the user must be informed about capturing at all times. The usage
+indicator cannot be prevented by the web app.
 
-Some companies run a managed device fleet. Some of them need a way to obtain video tracks of all screens, for such use cases as:
-* Recording sessions for compliance or training reasons.
-* Allowing a colleague to connect remotely and provide assistance.
+## Motivation
+Web developers have [expressed interest](https://github.com/w3c/mediacapture-screen-share/issues/204) for such an API in order to meet legal and internal
+compliance requirements.
 
-The state of the art is that they need to call getDisplayMedia() multiple times, with a new transient activation each time, and instruct the user to select the "next" screen each time. This is cumbersome and error-prone. For such companies, an API that allows capturing all screens with one transient activation - or none - would be preferable. Such an API would usually be very risky and open to abuse. But in the context of managed-devices, the device can be configured to only allow the API to be invoked from a small set of allowlisted origins.
+## Use cases
+* Contact centers may require full documentation of provided information for
+compliance and / or training purposes.
+* In the financial industry a consultant may provide financial advice digitally
+and a complete documentation of the information may be required by law in some
+jurisdictions.
+* Internet usage in prisons may require full traceability to allow convicts to
+access the internet.
 
-### Proposed Solution
+## API
 
-Add a new method getAllScreensMedia that returns a promise to a sequence of media streams.
+`getAllScreensMedia` can be used similarly to `getDisplayMedia` with
+a few differences:
+* `getAllScreensMedia` returns a promise to a sequence of
+`MediaStreams` (one `MediaStream` per monitor).
+* Constraints cannot be passed in the `getAllScreensMedia` call. Constraints may be
+different depending on the monitor and information determining the desired
+constraints (resolution, size, …) is likely only available after the monitor
+was captured. Constraints can be applied on the returned `MediaStreamTrack`
+with `applyConstraints`.
+* `getAllScreensMedia` will only be available for web apps allowlisted by a
+policy.
+* Usage indicators must be shown to the user at all times.
 
-```webidl
+`getAllScreensMedia` will use `ScreenCaptureMediaStreamTrack` (which is a
+subclass of `MediaStreamTrack`) in the returned `MediaStream` which provides
+access to monitor details analogous to the
+[getScreenDetails API](https://developer.chrome.com/articles/multi-screen-window-placement/#the-getscreendetails()-method).
+
+```idl
 partial interface MediaDevices {
-  Promise<sequence<MediaStream>> getAllScreensMedia();
+ Promise<sequence<MediaStream>> getAllScreensMedia();
+}
+```
+
+```idl
+interface ScreenCaptureMediaStreamTrack : MediaStreamTrack {
+  ScreenDetailed screenDetailed();
+}
+```
+
+## Example usage
+```js
+try {
+  const mediaStreams = await navigator.mediaDevices.getAllScreensMedia();
+  mediaStreams.forEach((mediaStream, index) => {
+    files.push(saveToFile(mediaStream));
+  })
+} catch (e) {
+  console.log('Unable to acquire screen captures: ' + e);
 }
 ```
