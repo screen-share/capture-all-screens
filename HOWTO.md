@@ -2,7 +2,7 @@
 title: "How to experiment with getAllScreensMedia in Chrome"
 maintainer: "simonha"
 created: 2023/05/05
-updated: 2023/05/05
+updated: 2023/06/07
 ---
 
 # How to experiment with getAllScreensMedia on ChromeOS
@@ -26,27 +26,25 @@ We will do our best to keep these instructions up to date as protocol and API ch
 ```javascript
 async function captureAndShowAllScreens() {
   try {
-    const screensDiv = document.getElementById("all_screens");
+    const screensDiv = document.getElementById("all-screens");
     const screens = await navigator.mediaDevices.getAllScreensMedia();
-    let screenNumber = 0;
-    screens.forEach(async function(screen) {
+    screens.forEach((screen, index) => {
       const screenDiv = document.createElement("div");
       const metadata = document.createElement("div");
-      const videoTrack = await screen.getVideoTracks()[0];
-      const screenDetailed = await videoTrack.screenDetailed();
-      metadata.innerHTML = "Screen " + screenNumber + ": Position (" + screenDetailed.left + ", " + screenDetailed.top + ")";
+      const videoTrack = screen.getVideoTracks()[0];
+      const screenDetailed = videoTrack.screenDetailed();
+      metadata.textContent = `Screen ${index}: Position (${screenDetailed.top}, ${screenDetailed.left})`;
       screenDiv.appendChild(metadata);
       const screenElement = document.createElement("video");
-      screenElement.style.width = "256px";
-      screenElement.style.height = "192px";
-      screenElement.setAttribute("autoplay", "");
+      screenElement.width = 256;
+      screenElement.height = 192;
+      screenElement.autoplay = true;
       screenElement.srcObject = screen;
       screenDiv.appendChild(screenElement);
       screensDiv.appendChild(screenDiv);
-      screenNumber += 1;
     });
   } catch (e) {
-    console.log('Unable to acquire screen captures: ' + e);
+    console.log("Unable to acquire screen captures: " + e);
   }
 }
 ```
