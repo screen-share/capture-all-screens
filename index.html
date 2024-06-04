@@ -147,6 +147,7 @@
       </h2>
       <pre class="idl">
           partial interface MediaDevices {
+            [Exposed=(Window), IsolatedContext]
             Promise&lt;sequence&lt;MediaStream&gt;&gt; getAllScreensMedia();
           };
         </pre>
@@ -239,7 +240,7 @@
       with the {{MediaDevices/ScreenCaptureMediaStreamTrack/screenDetailed}} function with which metadata about the
       captured <a data-cite="screen-capture#dfn-monitor">monitor</a> can be retrieved.
       <pre class="idl">
-        [Exposed=Window]
+        [Exposed=Window, IsolatedContext]
         interface ScreenCaptureMediaStreamTrack : MediaStreamTrack {
           ScreenDetailed screenDetailed();
         };
@@ -255,6 +256,53 @@
       </dl>
     </section>
   </section>
+
+  <section data-cite="permissions">
+    <h1 id="permissions-intergration">Permissions Integration</h1>
+
+
+    <p><cite>Capture all screens</cite> is a [=powerful feature=] which is
+    identified by the [=powerful feature/name=] "all-screens-capture", requiring
+    [=express permission=] to be used.</p>
+
+
+    <p>As required for integration with the [[[Permissions]]] specification,
+    this specification defines the following:</p>
+
+
+    <dl>
+      <dt>[=powerful feature/permission state constraints=]</dt>
+
+
+      <dd>
+        Valid values for this descriptor's <a>permission state</a> are
+        {{PermissionState/"granted"}} and {{PermissionState/"denied"}}. The user
+        agent sets this descriptor's <a>permission state</a> to
+        {{PermissionState/"granted"}} based on an administror defined allowlist.
+      </dd>
+    </dl>
+  </section>
+
+  <section>
+    <h1 id="feature-policy-integration">Permissions Policy Integration</h1>
+
+
+    <p>This specification uses a [=policy-controlled feature=] identified by
+    the string "all-screens-capture". Its
+    [=policy-controlled feature/default allowlist=] is <code>"self"</code>.</p>
+
+
+    <div class="note">
+      <p>A [=document=]'s [=Document/permissions policy=] determines whether
+      any content in that document is allowed to use
+      {{MediaDevices/getAllScreensMedia}}. If disabled in any document, no content
+      in the document will be [=allowed to use=]
+      {{MediaDevices/getAllScreensMedia}}. In addition, only origins allowlisted by
+      an administator or device owner are [=allowed to use=] {{MediaDevices/getAllScreensMedia}}.
+      </p>
+    </div>
+  </section>
+
   <section id="privacyindicatorsrequirements">
     <h2>
       Privacy Indicator Requirements
