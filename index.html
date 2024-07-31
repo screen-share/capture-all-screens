@@ -164,6 +164,12 @@
               <p>Let <var>p</var> be a new promise.</p>
             </li>
             <li>
+              If [=this=]'s [=relevant global object=]'s [=associated Document=] is
+          not [=allowed to use=] the [=policy-controlled feature=] named "all-screens-capture", [=reject=]
+          <var>p</var> with a new {{DOMException}} object whose {{DOMException/name}} attribute has the
+          value {{NotAllowedError}} and return <var>p</var>.
+            </li>
+            <li>
               <p>Run the following steps in parallel:</p>
               <ol>
                 <li>
@@ -271,8 +277,7 @@
       any content in that document is allowed to use
       {{MediaDevices/getAllScreensMedia}}. If disabled in any document, no content
       in the document will be [=allowed to use=]
-      {{MediaDevices/getAllScreensMedia}}. In addition, only origins allowlisted by
-      an administator or device owner are [=allowed to use=] {{MediaDevices/getAllScreensMedia}}.
+      {{MediaDevices/getAllScreensMedia}}.
       </p>
     </div>
   </section>
