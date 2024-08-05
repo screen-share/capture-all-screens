@@ -282,41 +282,84 @@
     </div>
   </section>
 
-  <section id="privacyindicatorsrequirements">
+  <section id="privacyandsecurityconsiderations">
+
     <h2>
-      Privacy Indicator Requirements
+      Privacy & Security Considerations
     </h2>
-    <p>
-      References in this specification to [[\devicesLiveMap]], and
-      [[\devicesAccessibleMap]] refer to the
-      definitions already created to support Privacy Indicator Requirements for
-      {{MediaDevices/getDisplayMedia()}}.
-    </p>
-    <p>
-      This specification extends the <a data-cite="screen-capture#privacy-indicator-requirements">
-      Privacy Indicator Requirements</a> of
-      {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreensMedia()}}.
-      In addition to these requirements, <a href="#dfn-user-agent">user agents</a> MUST
-      ensure that privacy indicators are visible at all times and that dismissal of the indicators
-      must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
-      of the application capturing the screens. The indicators MUST clearly inform the user that the
-      <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured.
-      Only the user may dismiss the privacy indicator.
-      The indicators MUST remain active for at five seconds, even if the capturing is ended earlier.
-    </p>
-    <p>
-      The <a href="#dfn-user-agent">user agents</a> MUST provide the user with
-      the means to look up whether any <a data-cite="url#concept-url-origin">origin</a>
-      is allowed to call {{MediaDevices/getAllScreensMedia()}}.
-      The <a href="#dfn-user-agent">user agents</a> MUST further provide the user
-      with information on the implications thereof.
-    </p>
-    <p>
-      The <a href="#dfn-user-agent">user agents</a> MUST notify the user that
-      capturing may happen in the future if {{MediaDevices/getAllScreensMedia()}}
-      is enabled. The notification must be shown before sensitive browser content
-      can be exposed, e.g. on user login.
-    </p>
+
+    <section id="privacyindicatorsrequirements">
+      <h2>
+        Privacy Considerations & Usage Rndicator Requirements
+      </h2>
+      <p>
+        References in this specification to [[\devicesLiveMap]], and
+        [[\devicesAccessibleMap]] refer to the
+        definitions already created to support Privacy Indicator Requirements for
+        {{MediaDevices/getDisplayMedia()}}.
+      </p>
+      <p>
+        This specification extends the <a data-cite="screen-capture#privacy-indicator-requirements">
+        Privacy Indicator Requirements</a> of
+        {{MediaDevices/getDisplayMedia()}} to include {{MediaDevices/getAllScreensMedia()}}.
+        In addition to these requirements, <a href="#dfn-user-agent">user agents</a> MUST
+        ensure that privacy indicators are visible at all times and that dismissal of the indicators
+        must not be persisted. The privacy indicators must inform about the <a data-cite="url#concept-url-origin">origin</a>
+        of the application capturing the screens. The indicators MUST clearly inform the user that the
+        <a data-cite="screen-capture#dfn-monitor">monitors</a> are captured.
+        Only the user may dismiss the privacy indicator.
+        The indicators MUST remain active for at least five seconds, even if the capturing is ended earlier to prevent
+        applications from capturing the screens without the user noticing.
+      </p>
+      <p>
+        The <a href="#dfn-user-agent">user agents</a> MUST provide the user with
+        the means to look up whether any <a data-cite="url#concept-url-origin">origin</a>
+        is allowed to call {{MediaDevices/getAllScreensMedia()}}.
+        The <a href="#dfn-user-agent">user agents</a> MUST further provide the user
+        with information on the implications thereof.
+      </p>
+      <p>
+        The <a href="#dfn-user-agent">user agents</a> MUST notify the user that
+        capturing may happen in the future if {{MediaDevices/getAllScreensMedia()}}
+        is enabled. The notification must be shown before sensitive browser content
+        can be exposed, e.g. on user login. A <a href="#dfn-user-agent">user agent</a>
+        MUST ensure that the administrator changes the allow-list while
+        the user is viewing senstive browser content.
+      </p>
+    </section>
+
+    <section id="securityconsiderations">
+
+      This section is non-normative.
+
+      <h3>Security Considerations</h3>
+      This sections discusses the major threats and mitigations.
+
+      <h4>Threat: Cross-site scripting</h4>
+      Attackers might use cross-site scripting to get access to sensitive information by using elevated permissions
+      of the allowlisted apps.
+      
+      <h5>Mitigation</h5>
+      The API is exposed in isolated contexts (i.e. in isolated web apps) only. Isolated web apps are intended to mitigate
+      client-side cross-site scripting attacks by enforcing strict <a data-xref-type="http-header">Content-Security-Policy</a>
+      and {{TrustedType}} and server-side cross-site scripting attacks by bundling and signing of the app.
+
+      <h4>Threat: Violation of organization policies</h4>
+      Use of the API may violate organization policies, that control which apps should have access to sensitive information.
+
+      <h5>Mitigation</h5>
+      User agents must restrict the use of the API based on allowlists defined by the organization's administrator.
+
+      <h4>Threat: Third-party iframes initiating screen capture</h4>
+      Third party iframes might initiate screen capture.
+
+      <h5>Mitigation</h5>
+      The "all-screens-capture" permissions policy will control access, preventing third-party use by default.
+      To further safeguard from potential third-party attacks, isolated web apps employ a strict
+      <a data-xref-type="http-header">Content-Security-Policy</a> that makes using external resources
+      (i.e. the ones not originating from the Web Bundle itself) difficult and enforce cross-origin-isolation.
+    </section>
+
   </section>
 </body>
 
